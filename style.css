@@ -214,3 +214,14 @@ body.cv::before{
 /* Tiny adjustments to ensure nav doesn't scroll independently */
 .cv__nav, .cv__nav-list{overflow:visible}
 
+/* Links trong header-contact (sdt, email, địa chỉ) */
+.cv__header-contact a {
+  color: var(--accent);       /* màu nổi bật xanh sáng */
+  text-decoration: none;      /* bỏ gạch chân mặc định */
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.cv__header-contact a:hover {
+  color: #4fd1c5;             /* màu hover sáng hơn */
+  text-shadow: 0 0 8px rgba(79,209,197,0.4); /* glow nhẹ khi hover */
+}
