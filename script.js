@@ -1,52 +1,55 @@
+// script.js — CV Nguyễn Ngọc Nhật
+// Quản lý active nav, smooth scroll, giữ trang load ở đầu
 
+// Khi load trang => luôn ở đầu
+window.addEventListener("load", () => {
+  window.scrollTo(0, 0);
+});
 
-document.addEventListener("DOMContentLoaded", () => {
-    const avatar = document.querySelector(".cv__header-avatar-img");
-    const navLinks = document.querySelectorAll(".cv__nav a");
-    const sections = document.querySelectorAll("section");
-  
-    // 1. Thêm glow effect cho avatar khi load
-    if (avatar) {
-      setTimeout(() => {
-        avatar.classList.add("cv__header-avatar-img--glow");
-      }, 300); // delay nhẹ để trông tự nhiên
+// Smooth scroll cho nav links
+const navLinks = document.querySelectorAll(".cv__nav-link");
+navLinks.forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault();
+    const targetId = link.getAttribute("href");
+    const targetEl = document.querySelector(targetId);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  
-    // 2. Smooth scroll khi click nav
-    navLinks.forEach(link => {
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute("href").substring(1);
-        const targetSection = document.getElementById(targetId);
-  
-        if (targetSection) {
-          window.scrollTo({
-            top: targetSection.offsetTop - 20,
-            behavior: "smooth"
-          });
-        }
-      });
-    });
-  
-    // 3. Highlight nav khi scroll
-    window.addEventListener("scroll", () => {
-      let current = "";
-  
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.offsetHeight;
-  
-        if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
-          current = section.getAttribute("id");
-        }
-      });
-  
-      navLinks.forEach(link => {
-        link.classList.remove("active");
-        if (link.getAttribute("href") === "#" + current) {
-          link.classList.add("active");
-        }
-      });
-    });
   });
-  
+});
+
+// Highlight active nav khi scroll
+const sections = document.querySelectorAll(".cv__section, .cv__header");
+const options = { root: null, threshold: 0.4 };
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.getAttribute("id");
+      if (id) {
+        document.querySelectorAll(".cv__nav-link").forEach(link => {
+          link.classList.remove("is-active");
+          if (link.getAttribute("href") === `#${id}`) {
+            link.classList.add("is-active");
+          }
+        });
+      }
+    }
+  });
+}, options);
+
+sections.forEach(section => observer.observe(section));
+
+// Optional: hiệu ứng click nhỏ (ripple effect)
+navLinks.forEach(link => {
+  link.addEventListener("click", function(e){
+    const ripple = document.createElement("span");
+    ripple.className = "ripple";
+    ripple.style.left = e.clientX - link.getBoundingClientRect().left + "px";
+    ripple.style.top = e.clientY - link.getBoundingClientRect().top + "px";
+    link.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  });
+});
+
